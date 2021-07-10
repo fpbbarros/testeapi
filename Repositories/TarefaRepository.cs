@@ -44,7 +44,7 @@ namespace TarefasBackEnd.Repositories
 
     public List<Tarefa> Read(Guid id)
     {
-      return _context.Tarefas.Where(t => t.UsuarioId == id).ToList();
+      return _context.Tarefas.Where(tarefa => tarefa.UsuarioId == id).ToList();
     }
 
     public Tarefa ReadOne(Guid id)
