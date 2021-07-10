@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
@@ -17,8 +18,11 @@ namespace TarefasBackEnd
 {
     public class Startup
     {
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+        public IConfiguration Configuration { get; set; }
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
         public void ConfigureServices(IServiceCollection services)
         {
             var key = Encoding.ASCII.GetBytes("ChaveMuitogrande");
@@ -39,7 +43,9 @@ namespace TarefasBackEnd
                 };
             });
 
-            services.AddDbContext<DataContext>(options => options.UseInMemoryDatabase("BDTarefas"));
+            services.AddDbContext<DataContext>(options => 
+            options.UseNpgsql(Configuration.GetConnectionString("Heroku")));
+
             services.AddTransient<ITarefaRepository, TarefaRepository>();
             services.AddTransient<IUsurioRepository, UsuarioRepository>();
         }
